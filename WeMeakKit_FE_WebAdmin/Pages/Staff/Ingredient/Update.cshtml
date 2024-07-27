@@ -1,0 +1,69 @@
+﻿@page "{id:guid}"
+@model WeMeakKit_FE_WebAdmin.Pages.Staff.Ingredient.UpdateModel
+
+@{
+    ViewData["Title"] = "Update Ingredient";
+}
+
+<div class="container mt-5">
+    <h1>Update Ingredient</h1>
+
+    <form method="post">
+        <div class="form-group">
+            <label asp-for="IngredientUpdate.Name" class="control-label"></label>
+            <input asp-for="IngredientUpdate.Name" class="form-control" />
+            <span asp-validation-for="IngredientUpdate.Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="IngredientUpdate.IngredientCategoryId" class="control-label"></label>
+            <select asp-for="IngredientUpdate.IngredientCategoryId" asp-items="Model.IngredientCategoryList" class="form-control">
+                <option value="">Select Category</option>
+            </select>
+            <span asp-validation-for="IngredientUpdate.IngredientCategoryId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="IngredientUpdate.Unit" class="control-label"></label>
+            <input asp-for="IngredientUpdate.Unit" class="form-control" />
+            <span asp-validation-for="IngredientUpdate.Unit" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="IngredientUpdate.Price" class="control-label"></label>
+            <input asp-for="IngredientUpdate.Price" class="form-control" type="number" step="0.01" />
+            <span asp-validation-for="IngredientUpdate.Price" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="IngredientUpdate.PackagingMethod" class="control-label"></label>
+            <input asp-for="IngredientUpdate.PackagingMethod" class="form-control" />
+            <span asp-validation-for="IngredientUpdate.PackagingMethod" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="IngredientUpdate.PreservationMethod" class="control-label"></label>
+            <input asp-for="IngredientUpdate.PreservationMethod" class="form-control" />
+            <span asp-validation-for="IngredientUpdate.PreservationMethod" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="IngredientUpdate.Status" class="control-label"></label>
+            <input asp-for="IngredientUpdate.Status" class="form-control" type="number" />
+            <span asp-validation-for="IngredientUpdate.Status" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="IngredientUpdate.IngredientNutrient.Calories" class="control-label"></label>
+            <input asp-for="IngredientUpdate.IngredientNutrient.Calories" class="form-control" type="number" step="0.01" />
+            <span asp-validation-for="IngredientUpdate.IngredientNutrient.Calories" class="text-danger"></span>
+        </div>
+
+        <!-- Add more fields for other nutrients similarly -->
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </form>
+</div>

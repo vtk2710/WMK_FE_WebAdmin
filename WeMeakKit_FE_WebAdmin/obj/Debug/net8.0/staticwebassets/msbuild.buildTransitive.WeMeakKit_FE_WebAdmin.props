@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\WeMeakKit_FE_WebAdmin.props" />
+</Project>

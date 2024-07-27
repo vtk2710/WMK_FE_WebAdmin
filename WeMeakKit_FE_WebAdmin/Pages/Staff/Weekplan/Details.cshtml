@@ -1,0 +1,95 @@
+﻿@page "{id:guid}"
+@model WeMeakKit_FE_WebAdmin.Pages.Staff.Weekplan.DetailsModel
+
+@{
+    ViewData["Title"] = "Weekly Plan Details";
+}
+
+<h2>@Model.weeklyPlan.Title</h2>
+
+<div>
+    <img src="@Model.weeklyPlan.UrlImage" alt="Image" style="max-width: 100%; height: auto;" />
+</div>
+
+<div>
+    <strong>Description:</strong> @Model.weeklyPlan.Description
+</div>
+
+<div>
+    <strong>Start Date:</strong> @Model.weeklyPlan.BeginDate?.ToString("yyyy-MM-dd")
+</div>
+
+<div>
+    <strong>End Date:</strong> @Model.weeklyPlan.EndDate?.ToString("yyyy-MM-dd")
+</div>
+
+<div>
+    <strong>Created By:</strong> @Model.weeklyPlan.CreatedBy
+</div>
+
+<div>
+    <strong>Created At:</strong> @Model.weeklyPlan.CreateAt.ToString("yyyy-MM-dd HH:mm")
+</div>
+
+@if (Model.weeklyPlan.ApprovedAt.HasValue)
+{
+    <div>
+        <strong>Approved By:</strong> @Model.weeklyPlan.ApprovedBy
+    </div>
+
+    <div>
+        <strong>Approved At:</strong> @Model.weeklyPlan.ApprovedAt.Value.ToString("yyyy-MM-dd HH:mm")
+    </div>
+}
+
+@if (Model.weeklyPlan.UpdatedAt.HasValue)
+{
+    <div>
+        <strong>Updated By:</strong> @Model.weeklyPlan.UpdatedBy
+    </div>
+
+    <div>
+        <strong>Updated At:</strong> @Model.weeklyPlan.UpdatedAt.Value.ToString("yyyy-MM-dd HH:mm")
+    </div>
+}
+
+<div>
+    <strong>Status:</strong> @Model.weeklyPlan.ProcessStatus
+</div>
+
+@if (!string.IsNullOrEmpty(Model.weeklyPlan.Notice))
+{
+    <div>
+        <strong>Notice:</strong> @Model.weeklyPlan.Notice
+    </div>
+}
+
+<h3>Orders</h3>
+@if (Model.weeklyPlan.Orders.Any())
+{
+    <ul>
+        @foreach (var order in Model.weeklyPlan.Orders)
+        {
+            <li>@order.OrderDate</li> <!-- Replace SomeProperty with actual property name -->
+        }
+    </ul>
+}
+else
+{
+    <p>No orders available.</p>
+}
+
+<h3>Recipes Plans</h3>
+@if (Model.weeklyPlan.RecipesPlans.Any())
+{
+    <ul>
+        @foreach (var recipePlan in Model.weeklyPlan.RecipesPlans)
+        {
+            <li>@recipePlan.MealInDay</li> <!-- Replace SomeProperty with actual property name -->
+        }
+    </ul>
+}
+else
+{
+    <p>No recipes plans available.</p>
+}

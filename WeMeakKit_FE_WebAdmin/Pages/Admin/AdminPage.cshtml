@@ -1,0 +1,27 @@
+﻿@page
+@model WeMeakKit_FE_WebAdmin.Pages.Admin.AdminPageModel
+@{
+}
+<h1>Manager page</h1>
+
+<div class="nav-scrollable" onclick="toggleNavbar()">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <a class="nav-link" href="/">
+                <span class="bi bi-house-door-fill" aria-hidden="true"></span> Profile
+            </a>
+        </div>
+
+        <div class="nav-item px-3">
+            <a class="nav-link" href="/Staff/Recipe/Index">
+                <span class="bi bi-plus-square-fill" aria-hidden="true"></span> Dashboard
+            </a>
+        </div>
+
+        <div class="nav-item px-3">
+            <a class="nav-link" href="/weather">
+                <span class="bi bi-list-nested" aria-hidden="true"></span> Accounts
+            </a>
+        </div>
+    </nav>
+</div>

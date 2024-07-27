@@ -1,0 +1,151 @@
+﻿@page
+@model WeMeakKit_FE_WebAdmin.Pages.Staff.Ingredient.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>@Model.Message</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="IngredientCreate.IngredientCategoryId" class="control-label"></label>
+        <select asp-for="IngredientCreate.IngredientCategoryId" class="form-control" id="ingredientCategorySelect">
+            <option value="">Select Category</option>
+        </select>
+        <span asp-validation-for="IngredientCreate.IngredientCategoryId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.Name" class="control-label"></label>
+        <input asp-for="IngredientCreate.Name" class="form-control" />
+        <span asp-validation-for="IngredientCreate.Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.Img" class="control-label"></label>
+        <input asp-for="IngredientCreate.Img" class="form-control" />
+        <span asp-validation-for="IngredientCreate.Img" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.Unit" class="control-label"></label>
+        <input asp-for="IngredientCreate.Unit" class="form-control" />
+        <span asp-validation-for="IngredientCreate.Unit" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.Price" class="control-label"></label>
+        <input asp-for="IngredientCreate.Price" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="IngredientCreate.Price" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.PackagingMethod" class="control-label"></label>
+        <input asp-for="IngredientCreate.PackagingMethod" class="form-control" />
+        <span asp-validation-for="IngredientCreate.PackagingMethod" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.PreservationMethod" class="control-label"></label>
+        <input asp-for="IngredientCreate.PreservationMethod" class="form-control" />
+        <span asp-validation-for="IngredientCreate.PreservationMethod" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.Status" class="control-label"></label>
+        <select asp-for="IngredientCreate.Status" class="form-control">
+            <option value="">Select Status</option>
+            <option value="0">Active</option>
+            <option value="1">Inactive</option>
+        </select>
+        <span asp-validation-for="IngredientCreate.Status" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.CreatedBy" class="control-label"></label>
+        <input asp-for="IngredientCreate.CreatedBy" class="form-control" />
+        <span asp-validation-for="IngredientCreate.CreatedBy" class="text-danger"></span>
+    </div>
+
+    <h3>Nutrient Information</h3>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.IngredientNutrient.Calories" class="control-label"></label>
+        <input asp-for="IngredientCreate.IngredientNutrient.Calories" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="IngredientCreate.IngredientNutrient.Calories" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.IngredientNutrient.Fat" class="control-label"></label>
+        <input asp-for="IngredientCreate.IngredientNutrient.Fat" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="IngredientCreate.IngredientNutrient.Fat" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.IngredientNutrient.SaturatedFat" class="control-label"></label>
+        <input asp-for="IngredientCreate.IngredientNutrient.SaturatedFat" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="IngredientCreate.IngredientNutrient.SaturatedFat" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.IngredientNutrient.Sugar" class="control-label"></label>
+        <input asp-for="IngredientCreate.IngredientNutrient.Sugar" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="IngredientCreate.IngredientNutrient.Sugar" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.IngredientNutrient.Carbohydrate" class="control-label"></label>
+        <input asp-for="IngredientCreate.IngredientNutrient.Carbohydrate" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="IngredientCreate.IngredientNutrient.Carbohydrate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.IngredientNutrient.DietaryFiber" class="control-label"></label>
+        <input asp-for="IngredientCreate.IngredientNutrient.DietaryFiber" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="IngredientCreate.IngredientNutrient.DietaryFiber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.IngredientNutrient.Protein" class="control-label"></label>
+        <input asp-for="IngredientCreate.IngredientNutrient.Protein" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="IngredientCreate.IngredientNutrient.Protein" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IngredientCreate.IngredientNutrient.Sodium" class="control-label"></label>
+        <input asp-for="IngredientCreate.IngredientNutrient.Sodium" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="IngredientCreate.IngredientNutrient.Sodium" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Create Ingredient" class="btn btn-primary" />
+    </div>
+</form>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: 'https://api.wemealkit.ddns.net/api/ingredientcategories/get-all',
+                type: 'GET',
+                success: function (data) {
+                    var select = $('#ingredientCategorySelect');
+                    select.empty();
+                    select.append('<option value="">Select Category</option>');
+                    $.each(data.data, function (index, category) {
+                        select.append('<option value="' + category.id + '">' + category.name + '</option>');
+                    });
+                }
+            });
+        });
+    </script>
+}

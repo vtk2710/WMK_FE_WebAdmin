@@ -1,0 +1,276 @@
+﻿@page
+@model WeMeakKit_FE_WebAdmin.Pages.Staff.Recipe.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container mt-5">
+    <!-- Navigation Buttons Above Recipe Details -->
+    <div class="d-flex justify-content-between mb-3">
+        <a asp-page="./Index" class="btn btn-secondary">Back</a>
+        <a asp-page="./Edit" asp-route-id="@Model.recipeDetails.Id" class="btn btn-primary">Edit</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <img src="@Model.recipeDetails.Img" class="card-img-top fixed-size-img" alt="@Model.recipeDetails.Name">
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h1 class="card-title">@Model.recipeDetails.Name</h1>
+                    <p class="card-text">@Model.recipeDetails.Description</p>
+
+                    <h5>Details</h5>
+                    <ul class="list-unstyled">
+                        <li><strong>Serving Size:</strong> @Model.recipeDetails.ServingSize</li>
+                        <li><strong>Cooking Time:</strong> @Model.recipeDetails.CookingTime minutes</li>
+                        <li><strong>Difficulty:</strong> @((DifficultLevel)Model.recipeDetails.Difficulty)</li>
+                        <li><strong>Price:</strong> $@Model.recipeDetails.Price</li>
+                        <li><strong>Popularity:</strong> @Model.recipeDetails.Popularity</li>
+                        <li>
+                            <strong>Process Status:</strong>
+                            <span class="status-text @(Model.recipeDetails.ProcessStatus == "Approve" ? "text-success" : (Model.recipeDetails.ProcessStatus == "Denied" ? "text-danger" : ""))">
+                                @Model.recipeDetails.ProcessStatus
+                            </span>
+                        </li>
+                        <li><strong>Notice:</strong> @Model.recipeDetails.Notice</li>
+                        <li><strong>Created At:</strong> @Model.recipeDetails.CreatedAt?.ToString("g")</li>
+                        <li><strong>Created By:</strong> <span id="createdBy">@Model.recipeDetails.CreatedBy</span></li>
+                        <li><strong>Approved At:</strong> @Model.recipeDetails.ApprovedAt?.ToString("g")</li>
+                        <li><strong>Approved By:</strong> <span id="approvedBy">@Model.recipeDetails.ApprovedBy</span></li>
+                        <li><strong>Updated At:</strong> @Model.recipeDetails.UpdatedAt?.ToString("g")</li>
+                        <li><strong>Updated By:</strong> <span id="updatedBy">@Model.recipeDetails.UpdatedBy</span></li>
+                    </ul>
+
+                    <h5>Categories</h5>
+                    <ul class="list-unstyled">
+                        @foreach (var category in Model.recipeDetails.recipeCategories)
+                        {
+                            <li class="badge badge-primary mr-1">@category.Category.Name</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <ul class="nav nav-tabs" id="recipeTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="ingredients-tab" data-toggle="tab" href="#ingredients" role="tab" aria-controls="ingredients" aria-selected="true">Ingredients</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="steps-tab" data-toggle="tab" href="#steps" role="tab" aria-controls="steps" aria-selected="false">Steps</a>
+                </li>
+            </ul>
+            <div class="tab-content mt-3" id="recipeTabsContent">
+                <div class="tab-pane fade show active" id="ingredients" role="tabpanel" aria-labelledby="ingredients-tab">
+                    <h5>Ingredients</h5>
+                    <ul class="list-unstyled">
+                        @foreach (var ingredient in Model.recipeDetails.recipeIngredients)
+                        {
+                            <li class="ingredient-item mb-3">
+                                <div class="d-flex align-items-center">
+                                    @if (!string.IsNullOrEmpty(ingredient.Ingredient.Img))
+                                    {
+                                        <img src="@ingredient.Ingredient.Img" alt="@ingredient.Ingredient.Name" class="ingredient-img mr-3">
+                                    }
+                                    <div>
+                                        <strong>@ingredient.Ingredient.Name</strong> - @ingredient.Amount @ingredient.Ingredient.Unit
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="tab-pane fade" id="steps" role="tabpanel" aria-labelledby="steps-tab">
+                    <h5>Steps</h5>
+                    <div class="step-container">
+                        @foreach (var step in Model.recipeDetails.recipeSteps)
+                        {
+                            <div class="step-item mb-4">
+                                <div class="step-details">
+                                    <span class="step-index">Step @step.Index:</span>
+                                    <span class="step-name"><strong>@step.Name</strong></span>
+                                    <span class="step-description">@step.Description</span>
+                                </div>
+                                @if (!string.IsNullOrEmpty(step.ImageLink))
+                                {
+                                    <img src="@step.ImageLink" class="step-img" alt="Step Image">
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include jQuery and Bootstrap scripts -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+<script>
+    // Fetch user names
+    function fetchUserName(userId, elementId) {
+        if (userId) {
+            fetch(`https://api.wemealkit.ddns.net/api/user/get-id?id=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Fetched user data:', data); // Debugging line
+                    if (data && data.data && data.data.userName) {
+                        document.getElementById(elementId).textContent = data.data.userName;
+                    } else {
+                        document.getElementById(elementId).textContent = '';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user name:', error);
+                    document.getElementById(elementId).textContent = 'Error';
+                });
+        }
+    }
+
+    $(document).ready(function () {
+        const createdById = '@Model.recipeDetails.CreatedBy';
+        const approvedById = '@Model.recipeDetails.ApprovedBy';
+        const updatedById = '@Model.recipeDetails.UpdatedBy';
+
+        fetchUserName(createdById, 'createdBy');
+        fetchUserName(approvedById, 'approvedBy');
+        fetchUserName(updatedById, 'updatedBy');
+    });
+</script>
+
+<style>
+    /* Ensure the image fits within the container without pushing other content */
+    .fixed-size-img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Flexbox container for aligning buttons above the recipe */
+    .d-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Button styling */
+    .btn {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+        color: white;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        color: white;
+    }
+
+        .btn-secondary:hover, .btn-primary:hover {
+            opacity: 0.8;
+        }
+
+    /* Tab content takes full width */
+    .tab-content {
+        width: 100%;
+    }
+
+    /* Flexbox adjustments for step details */
+    .step-details {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .step-index {
+        margin-right: 10px;
+        font-weight: bold;
+    }
+
+    .step-name {
+        margin-right: 10px;
+    }
+
+    .step-description {
+        flex: 1;
+    }
+
+    /* Container for the tabs to utilize full width */
+    .step-container {
+        width: 100%;
+    }
+
+    /* Styling for step images */
+    .step-img {
+        max-width: 100%;
+        height: auto;
+        margin-top: 10px;
+    }
+
+    /* Ensure full width usage */
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .card-title {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .badge-primary {
+        background-color: #007bff;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 10px;
+    }
+
+    .list-unstyled {
+        padding-left: 0;
+        list-style: none;
+    }
+
+    .nav-tabs .nav-link.active {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .nav-tabs .nav-link {
+        border: 1px solid #dee2e6;
+    }
+
+    .nav-tabs {
+        margin-bottom: 0;
+    }
+
+    /* Container for each ingredient item */
+    .ingredient-item {
+        display: flex;
+        align-items: center;
+    }
+
+    .ingredient-img {
+        max-width: 50px;
+        height: auto;
+    }
+
+    /* Styling for status text */
+    .text-success {
+        color: green;
+    }
+
+    .text-danger {
+        color: red;
+    }
+</style>

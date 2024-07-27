@@ -1,0 +1,113 @@
+﻿@page
+@model WeMeakKit_FE_WebAdmin.Pages.Staff.Ingredient.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="button-container d-flex justify-content-between mb-4">
+    <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+    <a asp-page="./Update" asp-route-id="@Model.ingredientDetails.Id" class="btn btn-primary">Update</a>
+</div>
+
+@if (Model.ingredientDetails == null)
+{
+    <div class="alert alert-danger text-center">
+        <h3>Ingredient not found.</h3>
+    </div>
+}
+else
+{
+    <div class="ingredient-details container mt-4">
+        <div class="ingredient-header row mb-4">
+            <div class="col-md-6 text-center">
+                <img src="@Model.ingredientDetails.Img" alt="@Model.ingredientDetails.Name" class="img-fluid rounded shadow-sm" />
+            </div>
+            <div class="col-md-6">
+                <h2 class="mb-3">@Model.ingredientDetails.Name</h2>
+                <p><strong>Unit:</strong> @Model.ingredientDetails.Unit</p>
+                <p><strong>Status:</strong> <span class="badge @(Model.ingredientDetails.Status == "Available" ? "bg-success" : "bg-secondary")">@Model.ingredientDetails.Status</span></p>
+                <p><strong>Price:</strong> @Model.ingredientDetails.Price.ToString("C")</p>
+                <p><strong>Packaging Method:</strong> @Model.ingredientDetails.PackagingMethod</p>
+                <p><strong>Preservation Method:</strong> @Model.ingredientDetails.PreservationMethod</p>
+            </div>
+        </div>
+
+        <div class="ingredient-info row mb-4">
+            <div class="col-md-6">
+                <h3>General Information</h3>
+                <p><strong>Category:</strong> @Model.ingredientDetails.IngredientCategory?.Name"</p>
+                <p><strong>Category Description:</strong> @Model.ingredientDetails.IngredientCategory?.Description"</p>
+            </div>
+            @if (Model.ingredientDetails.IngredientNutrient != null)
+            {
+                <div class="col-md-6">
+                    <h3>Nutritional Information</h3>
+                    <p><strong>Calories:</strong> @Model.ingredientDetails.IngredientNutrient.Calories</p>
+                    <p><strong>Fat:</strong> @Model.ingredientDetails.IngredientNutrient.Fat</p>
+                    <p><strong>Saturated Fat:</strong> @Model.ingredientDetails.IngredientNutrient.SaturatedFat</p>
+                    <p><strong>Sugar:</strong> @Model.ingredientDetails.IngredientNutrient.Sugar</p>
+                    <p><strong>Carbohydrate:</strong> @Model.ingredientDetails.IngredientNutrient.Carbohydrate</p>
+                    <p><strong>Dietary Fiber:</strong> @Model.ingredientDetails.IngredientNutrient.DietaryFiber</p>
+                    <p><strong>Protein:</strong> @Model.ingredientDetails.IngredientNutrient.Protein</p>
+                    <p><strong>Sodium:</strong> @Model.ingredientDetails.IngredientNutrient.Sodium</p>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<style>
+    .ingredient-details {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .ingredient-header img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .ingredient-info h3 {
+        margin-top: 0;
+    }
+
+    .ingredient-info p {
+        margin-bottom: 10px;
+    }
+
+    .ingredient-info strong {
+        font-weight: 600;
+    }
+
+    .badge {
+        padding: 0.5em 0.75em;
+        font-size: 0.875em;
+        border-radius: 0.25rem;
+    }
+
+    .bg-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .bg-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn {
+        padding: 0.5em 1em;
+        font-size: 1em;
+    }
+</style>

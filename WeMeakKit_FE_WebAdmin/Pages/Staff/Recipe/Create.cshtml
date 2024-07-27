@@ -1,0 +1,466 @@
+﻿@page
+@model WeMeakKit_FE_WebAdmin.Pages.Staff.Recipe.CreateModel
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor Accessor
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create Recipe</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" asp-page="./Create" id="createRecipeForm">
+            <div class="form-group">
+                <label asp-for="recipeCreate.Name" class="control-label"></label>
+                <input asp-for="recipeCreate.Name" class="form-control" />
+                <span asp-validation-for="recipeCreate.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="recipeCreate.ServingSize" class="control-label"></label>
+                <input asp-for="recipeCreate.ServingSize" class="form-control" />
+                <span asp-validation-for="recipeCreate.ServingSize" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="recipeCreate.CookingTime" class="control-label"></label>
+                <input asp-for="recipeCreate.CookingTime" class="form-control" />
+                <span asp-validation-for="recipeCreate.CookingTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="recipeCreate.Difficulty" class="control-label"></label>
+                <input asp-for="recipeCreate.Difficulty" class="form-control" />
+                <span asp-validation-for="recipeCreate.Difficulty" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="recipeCreate.Description" class="control-label"></label>
+                <textarea asp-for="recipeCreate.Description" class="form-control"></textarea>
+                <span asp-validation-for="recipeCreate.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="recipeCreate.Img" class="control-label"></label>
+                <input asp-for="recipeCreate.Img" class="form-control" />
+                <span asp-validation-for="recipeCreate.Img" class="text-danger"></span>
+            </div>
+            @* @Accessor.HttpContext.Session.GetString("UserId") *@
+            <div class="form-group">              
+                <input asp-for="recipeCreate.CreatedBy" class="form-control" value="@Accessor.HttpContext.Session.GetString("UserId")" hidden/>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Categories</label>
+                <input type="hidden" id="categoryIds" name="recipeCreate.CategoryIds" />
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#categoriesModal">Choose Categories</button>
+                <div id="selectedCategoriesContainer" class="mt-2">
+                    <!-- Selected categories will be displayed here -->
+                </div>
+            </div>
+
+            <!-- Ingredients Section -->
+            <div class="form-group">
+                <h3>Ingredients</h3>
+                <div id="ingredientsContainer">
+                    <!-- Ingredients will be added dynamically here -->
+                </div>
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ingredientsModal">Add Ingredient</button>
+            </div>
+
+            <!-- Steps Section -->
+            <div class="form-group">
+                <h3>Steps</h3>
+                <div id="stepsContainer">
+                    <!-- Steps will be added dynamically here -->
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="addStep()">Add Step</button>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" onclick="console.log('Form is being submitted')">Create Recipe</button>
+            </div>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal for selecting ingredients -->
+<div class="modal fade" id="ingredientsModal" tabindex="-1" aria-labelledby="ingredientsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ingredientsModalLabel">Select Ingredient</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group mb-3">
+                    <label for="ingredientCategoryFilter">Filter by Category</label>
+                    <select id="ingredientCategoryFilter" class="form-control">
+                        <option value="">All Categories</option>
+                        <!-- Categories will be populated here -->
+                    </select>
+                </div>
+                <ul class="list-group" id="ingredientsList">
+                    <!-- Ingredients will be populated here -->
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for selecting categories -->
+<div class="modal fade" id="categoriesModal" tabindex="-1" aria-labelledby="categoriesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="categoriesModalLabel">Select Categories</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="categoriesContainer">
+                    <!-- Categories will be populated here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="applyCategories()">Apply</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Success</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Recipe has been created successfully! Wait for the manager to approve your recipe.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="/Staff/Recipe/Index" class="btn btn-primary">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+<style>
+    .ingredient-image {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        margin-right: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-control {
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        let allIngredients = []; // Store all ingredients globally
+        let allCategories = []; // Store all categories globally
+        let selectedCategories = {};
+
+        async function loadIngredients() {
+            try {
+                const response = await fetch("https://api.wemealkit.ddns.net/api/ingredients/get-all");
+                if (!response.ok) throw new Error('Network response was not ok.');
+
+                const data = await response.json();
+                console.log('Fetched ingredients:', data);
+
+                if (!data || !Array.isArray(data.data) || data.data.length === 0) {
+                    console.error('No ingredients found or data is not an array.');
+                    return;
+                }
+
+                allIngredients = data.data;
+
+                // Populate categories filter
+                populateIngredientCategories();
+
+                // Display all ingredients initially
+                displayIngredients(allIngredients);
+
+                // Add event listener for category filter change
+                document.getElementById('ingredientCategoryFilter').addEventListener('change', function () {
+                    const selectedCategoryId = this.value;
+                    const filteredIngredients = selectedCategoryId ? allIngredients.filter(ingredient => ingredient.ingredientCategoryId === selectedCategoryId) : allIngredients;
+                    displayIngredients(filteredIngredients);
+                });
+
+            } catch (error) {
+                console.error('Error fetching ingredients:', error);
+            }
+        }
+
+        async function populateIngredientCategories() {
+            try {
+                const response = await fetch("https://api.wemealkit.ddns.net/api/ingredientcategories/get-all");
+                if (!response.ok) throw new Error('Network response was not ok.');
+
+                const data = await response.json();
+                console.log('Fetched ingredient categories:', data);
+
+                if (!data || !Array.isArray(data.data) || data.data.length === 0) {
+                    console.error('No ingredient categories found or data is not an array.');
+                    return;
+                }
+
+                const selectElement = document.getElementById('ingredientCategoryFilter');
+                data.data.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.name;
+                    selectElement.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error('Error fetching ingredient categories:', error);
+            }
+        }
+
+        function displayIngredients(ingredients) {
+            const ingredientsList = document.getElementById('ingredientsList');
+            ingredientsList.innerHTML = '';
+
+            ingredients.forEach(ingredient => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex align-items-center';
+                li.innerHTML = `
+                            <img src="${ingredient.img}" alt="${ingredient.name}" class="ingredient-image">
+                            <span>${ingredient.name}</span>
+                            <button type="button" class="btn btn-primary btn-sm ms-auto" onclick="addIngredient('${ingredient.id}', '${ingredient.name}')">Add</button>
+                        `;
+                ingredientsList.appendChild(li);
+            });
+        }
+
+        function addIngredient(id, name) {
+            const ingredientsContainer = document.getElementById('ingredientsContainer');
+            const ingredientElement = document.createElement('div');
+            ingredientElement.className = 'form-group d-flex align-items-center';
+            ingredientElement.innerHTML = `
+                        <input type="hidden" name="recipeCreate.RecipeIngredients[${ingredientsContainer.children.length}].IngredientId" value="${id}" />
+                        <label class="control-label me-2">${name}</label>
+                        <input type="number" name="recipeCreate.RecipeIngredients[${ingredientsContainer.children.length}].Amount" class="form-control me-2" placeholder="Amount" required />
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeIngredient(this)">Remove</button>
+                    `;
+            ingredientsContainer.appendChild(ingredientElement);
+        }
+
+        function removeIngredient(button) {
+            const ingredientElement = button.parentElement;
+            ingredientElement.remove();
+        }
+
+
+
+        async function loadCategories() {
+            try {
+                const response = await fetch("https://api.wemealkit.ddns.net/api/categories/get-all");
+                if (!response.ok) throw new Error('Network response was not ok.');
+
+                const data = await response.json();
+                console.log('Fetched categories:', data); // Check this in the console
+
+                if (!data || !Array.isArray(data.list) || data.list.length === 0) {
+                    console.error('No categories found or data is not an array.');
+                    return;
+                }
+
+                allCategories = data.list;
+                displayCategories();
+
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        }
+
+        function displayCategories() {
+            const container = document.getElementById('categoriesContainer');
+            container.innerHTML = ''; // Clear existing content
+
+            // Group categories by type
+            const categoriesByType = allCategories.reduce((acc, category) => {
+                if (!acc[category.type]) acc[category.type] = [];
+                acc[category.type].push(category);
+                return acc;
+            }, {});
+
+            // Create HTML for each category type
+            Object.keys(categoriesByType).forEach(type => {
+                const typeCategories = categoriesByType[type];
+                const categoryHtml = `
+                            <h5>${type}</h5>
+                            <div class="form-check-group">
+                                ${typeCategories.map(cat => `
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="${type}" id="category-${cat.id}" value="${cat.id}" />
+                                        <label class="form-check-label" for="category-${cat.id}">
+                                            ${cat.name}
+                                        </label>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                container.insertAdjacentHTML('beforeend', categoryHtml);
+            });
+        }
+
+        function applyCategories() {
+            const selectedCategories = {};
+
+            Object.keys(allCategories.reduce((acc, cat) => {
+                if (!acc[cat.type]) acc[cat.type] = [];
+                acc[cat.type].push(cat);
+                return acc;
+            }, {})).forEach(type => {
+                const selected = document.querySelector(`input[name="${type}"]:checked`);
+                if (selected) {
+                    const categoryId = selected.value;
+                    const categoryName = selected.nextElementSibling.textContent;
+
+                    if (!selectedCategories[type]) selectedCategories[type] = [];
+                    selectedCategories[type].push({ id: categoryId, name: categoryName });
+                }
+            });
+
+            const selectedCategoriesHtml = Object.entries(selectedCategories)
+                .map(([type, categories]) => `
+                            <div class="badge bg-primary me-1">${type}: ${categories.map(cat => `<span class="badge bg-secondary">${cat.name}</span>`).join(' ')}</div>
+                        `)
+                .join(' ');
+
+            document.getElementById('selectedCategoriesContainer').innerHTML = selectedCategoriesHtml;
+            document.getElementById('categoryIds').value = Object.values(selectedCategories).flat().map(cat => cat.id).join(',');
+
+            // Close the modal
+            document.querySelector('[data-bs-dismiss="modal"]').click();
+        }
+
+
+        function addStep() {
+            const stepsContainer = document.getElementById('stepsContainer');
+            const stepElement = document.createElement('div');
+            stepElement.className = 'form-group';
+
+            const stepIndex = stepsContainer.children.length;
+
+            stepElement.innerHTML = `
+                <div class="form-group">
+                    <label class="control-label">Step Index</label>
+                            <input type="number" name="recipeCreate.RecipeSteps[${stepIndex}].Index" class="form-control" value="${stepIndex + 1}" required />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Step Name</label>
+                            <input type="text" name="recipeCreate.RecipeSteps[${stepIndex}].Name" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Step Media URL</label>
+                            <input type="text" name="recipeCreate.RecipeSteps[${stepIndex}].MediaURL" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Step Image Link</label>
+                    <input type="text" name="recipeCreate.RecipeSteps[${stepIndex}].ImageLink" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Step Description</label>
+                            <textarea name="recipeCreate.RecipeSteps[${stepIndex}].Description" class="form-control" required></textarea>
+                </div>
+                <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeStep(this)">Remove Step</button>
+                <hr>
+            `;
+            stepsContainer.appendChild(stepElement);
+        }
+
+        function removeStep(button) {
+            const stepElement = button.parentElement;
+            stepElement.remove();
+        }
+
+        document.getElementById('createRecipeForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            try {
+                const formData = new FormData(this);
+                const jsonObject = Array.from(formData.entries()).reduce((acc, [key, value]) => {
+                    const finalKey = key.replace('recipeCreate.', '').replace('RecipeSteps', 'Steps').replace('RecipeIngredients', 'recipeIngredientsList');
+                    const match = finalKey.match(/^(\w+)\[(\d+)\]\.(\w+)$/);
+
+                    const parsedValue = !isNaN(value) ? Number(value) : value;
+                    if (finalKey === 'CategoryIds') {
+                        return {
+                            ...acc,
+                            [finalKey]: parsedValue?.split(',')
+                        }
+                    }
+                    if (match) {
+                        const arrayName = match[1];
+                        const index = parseInt(match[2], 10);
+                        const property = match[3];
+
+
+                        // Ensure the array exists in the accumulator object
+                        if (!acc[arrayName]) {
+                            acc[arrayName] = [];
+                        }
+
+                        // Ensure the object at the specified index exists
+                        if (!acc[arrayName][index]) {
+                            acc[arrayName][index] = {};
+                        }
+
+                        // Assign the value to the appropriate property
+                        acc[arrayName][index][property] = parsedValue;
+                    } else {
+                        acc[finalKey] = parsedValue;
+                    }
+                    return acc;
+                }, {});
+
+                console.log('Form data as JSON:', JSON.stringify(jsonObject));
+
+                const response = await fetch('https://api.wemealkit.ddns.net/api/recipes/create-new', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(jsonObject),
+                });
+
+                if (!response.ok) throw new Error('Network response was not ok.');
+
+                console.log('Recipe created successfully!');
+
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+
+            } catch (error) {
+                console.error('Error creating recipe:', error);
+            }
+        });
+
+        window.onload = async function () {
+            await loadIngredients();
+            await loadCategories();
+        };
+    </script>
+}
